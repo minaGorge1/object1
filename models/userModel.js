@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
+    name:{
+        type:String,
+        default:""
+    },
     email:{
         type:String,
         required:true,
@@ -17,19 +21,23 @@ const userSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    role:{
+    location:{
         type:String,
-        enum:["user","admin"],
-        default:"user"
+        default:"Fayoum"
+    },
+    is_admin:{
+        type:Number,
+        required:true
+    },
+    is_varified:{
+        type:Number,
+        default:0
     },
     token:{
         type:String,
         default:''
     },
-    //passwordChangedAt: Date,
-    //passwordResetCode: String,
-    //passwordResetExpires: Date,
-    //passwordResetVerified: Boolean,
+    
 });
 
 module.exports = mongoose.model("user",userSchema);

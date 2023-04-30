@@ -15,7 +15,7 @@ const {
 } = require('../utils/validators/authValidator');
 
 router.post("/signup",signupValidator, authController.postSignup);
-
+router.get("/verfiy",authController.verifyMail);
 router.post("/signin",loginValidator,authController.postSignin);
 router.post("/forget-password",authController.Postforget_password);
 router.post("/reset-password",authController.reset_password)

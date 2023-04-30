@@ -1,8 +1,13 @@
 const jwt = require('jsonwebtoken');
+const config = require("../config/config")
 
-const createToken = (payload) =>
-    jwt.sign({ userId: payload }, process.env.JWT_SECRET_KEY, {
-    expiresIn: process.env.JWT_EXPIRE_TIME,
-});
+const createToken = async(id) =>{
+    try {
+        const token = jwt.sign({ _id:id }, config.JWT_SECRET,{expiresIn:"1h"}); 
+        return token;
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+}
 
 module.exports = createToken;

@@ -1,4 +1,3 @@
-const config = require('../config/config')
 const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 const mongoose = require("mongoose");
@@ -8,7 +7,9 @@ const nodemailer = require('nodemailer');
 const randomstring = require('randomstring')
 
 
-const User = require('../models/authmodel');
+const User = require('../models/userModel');
+const config = require('../config/config')
+const sendMail = require("../utils/sendEmail");
 const { error } = require('console');
 const sendResetPasswordMail = async(email,token) =>{
     try {
@@ -67,11 +68,12 @@ exports.postSignup = (req, res, next) => {
                 _id: new mongoose.Types.ObjectId(),
                 email: req.body.email,
                 phoneNumber:req.body.phoneNumber,
-                password: hash
+                password: hash,
+                is_admin: 0
             });
-            user
-                .save()
+            user.save()
                 .then(result => {
+                    sendMail.sendVerificationEmail(req.body.email,result.user_id)
                     console.log(result);
                     res.status(201).json({
                     message: "User created"
@@ -88,6 +90,20 @@ exports.postSignup = (req, res, next) => {
         }
     });
 };
+exports.verifyMail = async(req,res,next)=>{
+    try {
+        const updateinfo = await User.updateOne({_id:req.query.id},{$set:{is_varified:1 }});
+        console.log(updateinfo);
+        res.status(201).json({
+            message: "Email verified"
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            error: error
+        });
+    }
+}
 
 exports.postSignin =  (req,res,next)=>{
     User.find({ email: req.body.email })

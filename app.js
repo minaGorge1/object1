@@ -3,11 +3,11 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const mongoose = require("mongoose");
-const DB_URL = "mongodb://127.0.0.1:27017/mtgy";
+const DB_URL = "mongodb://127.0.0.1:27017/mydatabase";
 
 
-const userRouter = require('./routes/authroute')
-const SPRouter = require("./routes/authSProute")
+const userRouter = require('./routes/userRouter')
+const SPRouter = require("./routes/spRoute")
 
 mongoose.connect(DB_URL,{useNewUrlParser:true})  
 const app = express();
