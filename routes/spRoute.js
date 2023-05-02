@@ -15,7 +15,7 @@ const {
 } = require('../utils/validators/authSPValidator');
 
 router.post("/SPsignup",signupValidator,spController.createNewUser);
-router.get("/verify",spController.verifyMail);
+router.get("/SPverify/:id",spController.verifyMail);
 router.post("/SPsignin",loginValidator,spController.postSignin);
 router.put("/SPlogout",spController.logout);
 router.post("/SPupdatePassword",spController.changepassword);
@@ -24,6 +24,7 @@ router.post("/SPresetPassword",spController.reset_password);
 router.get("/SP/:id",spController.getUserProfile);
 router.put("/SP/:id",spController.editUserProfile);
 router.delete("/SP/:id/delete",spController.deleteUserAccount);
+router.post("/SPverification",spController.sendVerificationLink);
 
 
 module.exports = router;

@@ -12,7 +12,7 @@ const {
 } = require('../utils/validators/authValidator');
 
 router.post("/signup",signupValidator,userController.createNewUser);
-router.get("/verify",userController.verifyMail);
+router.get("/verify/:id",userController.verifyMail);
 router.post("/signin",loginValidator,userController.postSignin);
 router.put("/signout",userController.logout);
 router.post("/updatePassword",userController.changepassword);
@@ -21,5 +21,6 @@ router.post("/resetPassword",userController.reset_password);
 router.get("/:id",userController.getUserProfile);
 router.put("/:id",userController.editUserProfile);
 router.delete("/:id/delete",userController.deleteUserAccount);
+router.post("/verification",userController.sendVerificationLink);
 
 module.exports = router;

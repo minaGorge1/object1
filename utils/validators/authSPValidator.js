@@ -1,6 +1,6 @@
 const { check } = require('express-validator');
 const validatorMiddleware = require('../../middlewares/validatorMiddleware');
-const User = require('../../models/userModel');
+const User = require('../../models/spModel');
 
 exports.signupValidator = [
 check('serviceName').not().isEmpty().withMessage('serviceName is required'),

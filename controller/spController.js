@@ -67,7 +67,7 @@ const createNewUser = async(req,res,next) =>{
         });
         const userData = await user.save();
         if(userData){
-            sendMail.sendVerificationEmail(req.body.email,userData._id);
+            sendMail.sendSPVerificationMail(req.body.email,userData._id);
             res.status(200).send({success:true,data:userData,msg:"your registration has been successfully Please verify your email"});
         }
         else{
@@ -79,7 +79,8 @@ const createNewUser = async(req,res,next) =>{
 }
 const verifyMail = async(req,res,next)=>{
     try {
-        const updateinfo = await ServiceProvider.updateOne({_id:req.query.id},{$set:{is_varified :1}});
+        const updateinfo = await ServiceProvider.updateOne({_id:req.params.id},{$set:{is_varified :1}});
+        console.log(req.params.id)
         res.status(201).json({
             data:updateinfo,
             message: "Email verified"
@@ -187,7 +188,7 @@ const reset_password = async(req,res,next)=>{
         if(tokenData){
             const password = req.body.password;
             const  newPassword = securePassword(password)
-            const UserData = await ServiceProvider.findByIdAndUpdate({ _id:tokenData._id},{$set:{ password:newPassword,token:""}},
+            const UserData = await ServiceProvider.findByIdAndUpdate({ _id:tokenData._id},{$set:{ password:newPassword}},
                 {
                     new:true
                 }).then(
@@ -245,6 +246,23 @@ const deleteUserAccount = async(req,res,next)=>{
         res.status(400).json("you can only delete your account")
     }
 }
+const sendVerificationLink = async (req,res,next)=>{
+    try {
+        const email = req.body.email;
+        const userData = await ServiceProvider.findOne({email:email});
+        console.log(userData.email)
+        if(userData){
+            sendMail.sendSPVerificationMail(userData.email,userData._id);
+            res.status(200).send({success:true, message:"Reset verification Mail"});
+        }
+        else{
+            res.status(400).send({success:false,message:"this mail is not exist"})
+        }
+    } 
+    catch (error) {
+        console.log(error.message);
+    }
+}
 
 
 module.exports = {
@@ -257,5 +275,6 @@ module.exports = {
     reset_password,
     getUserProfile,
     editUserProfile,
-    deleteUserAccount
+    deleteUserAccount,
+    sendVerificationLink
 }
