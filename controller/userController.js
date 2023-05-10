@@ -59,6 +59,7 @@ const createNewUser = async(req,res,next) =>{
         const user = new User({
             _id: new mongoose.Types.ObjectId(),
             email : req.body.email,
+            username:req.body.username,
             phoneNumber: req.body.phoneNumber,
             password : hashPassword,
             is_admin: 0

@@ -61,6 +61,7 @@ const createNewUser = async(req,res,next) =>{
             _id: new mongoose.Types.ObjectId(),
             serviceName:req.body.serviceName,
             email : req.body.email,
+            username:req.body.username,
             Address: req.body.Address,
             password : hashPassword,
             category:req.body.category,

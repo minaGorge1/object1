@@ -16,6 +16,9 @@ check('email')
         }
     })
     ),
+check("username")
+    .notEmpty()
+    .withMessage('username is required'),
 check('phoneNumber')
     .notEmpty()
     .withMessage('phone number required')
