@@ -82,7 +82,8 @@ const verifyMail = async(req,res,next)=>{
         res.status(201).json({
             data:updateinfo,
             message: "Email verified"
-        });
+        })
+        res.send("Email verified");
     } catch (error) {
         console.log(error.message);
         res.status(400).send(error.message);
