@@ -11,39 +11,39 @@ const config = require("../config/config")
 const createToken = require("../utils/createToken");
 
 
-const sendResetPasswordMail = (email,token)=>{
-    try {
-        const transporter = nodemailer.createTransport
-        ({
-            host:'smtp.gmail.com',
-            port:587,
-            secure:false,
-            requireTLS:true,
-            auth:{
-                user:config.emailUser,
-                pass:config.passwordUser
-            }
-        });
-            const mailOptions = {
-                from: config.emailUser,
-                to: email,
-                subject: 'password Reset',
-                html:'<p>Hi please copy the link to <a href="http://localhost:3000/resetPassword?token='+token+'">Reset</a> your password.</p>'
-            };
+// const sendResetPasswordMail = (email,token)=>{
+//     try {
+//         const transporter = nodemailer.createTransport
+//         ({
+//             host:'smtp.gmail.com',
+//             port:587,
+//             secure:false,
+//             requireTLS:true,
+//             auth:{
+//                 user:config.emailUser,
+//                 pass:config.passwordUser
+//             }
+//         });
+//             const mailOptions = {
+//                 from: config.emailUser,
+//                 to: email,
+//                 subject: 'password Reset',
+//                 html:'<p>Hi please copy the link to <a href="http://localhost:3000/resetPassword?token='+token+'">Reset</a> your password.</p>'
+//             };
             
-            transporter.sendMail(mailOptions, function(error, info){
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log('Email sent: ' + info.response);
-                }
-            })
+//             transporter.sendMail(mailOptions, function(error, info){
+//                 if (error) {
+//                     console.log(error);
+//                 } else {
+//                     console.log('Email sent: ' + info.response);
+//                 }
+//             })
 
-    } catch (error) {
-        console.log(error)
-    }
+//     } catch (error) {
+//         console.log(error)
+//     }
 
-}
+// }
 // bycrpt password
 const securePassword = (password)=>{
     try {
@@ -76,19 +76,25 @@ const createNewUser = async(req,res,next) =>{
         res.status(400).send(error.message);
     }
 }
+//id need to update function
 const verifyMail = async(req,res,next)=>{
+    const userid = req.query.user_id;
     try {
-        const updateinfo = await User.updateOne({_id:req.params.id},{$set:{is_varified :1}});
-        res.status(201).json({
-            data:updateinfo,
-            message: "Email verified"
-        })
+        console.log(userid);
+        const updateinfo = await User.updateOne({_id:userid},{$set:{is_varified :1}});
+        // res.status(201).json({
+        //     data:updateinfo,
+        //     message: "Email verified"
+        // })
+        console.log(updateinfo);
         res.send("Email verified");
+
     } catch (error) {
         console.log(error.message);
         res.status(400).send(error.message);
     }
 }
+
 const postSignin = async(req,res,next)=>{
     try {
         const email = req.body.email;
@@ -131,16 +137,16 @@ const logout = (req,res, next) =>{
 const changepassword = async(req,res,next)=>
 {
     try {
-        const user_id = req.body.user_id;
+        const email = req.body.email;
         const password = req.body.password;
-    
-        const data = await User.findOne({_id:user_id})
+        const user = await User.findOne({email:email})
+        const data = await User.findOne({_id:user._id})
             if(data)
             {
             const newpassword = securePassword(password);
             const userData = await User.findByIdAndUpdate(
                         {
-                            _id:user_id
+                            _id:user._id
                         },
                         {
                             $set:{
@@ -166,7 +172,7 @@ const forget_password = async(req,res,next)=>{
         if(userData){
             const randomString = randomstring.generate();
             const Data = await User.updateOne({email:email},{$set:{token:randomString}});
-            sendResetPasswordMail(userData.email,randomString);
+            sendMail.sendResetPasswordMail(userData.email,randomString);
             res.status(200).send({success:true, msg:"Please check your email inbox"})
 
         }
@@ -205,22 +211,23 @@ const reset_password = async(req,res,next)=>{
 }
 //profile
 const getUserProfile = async(req,res,next)=>{
-    if(req.params.id){
+    const email = req.body.email
         try {
-            const user = await User.findById(req.params.id)
+            const userData = await User.findOne({email:email})
+            const user = await User.findById(userData._id)
             return res.status(200).json(user)
         } 
         catch (error) {
-            return res.status(400).json('user id is required');
+            return res.status(400).json('user email is required');
     }
 }
-}
 const editUserProfile = async(req,res,next)=>{
+    const email = req.body.email
     try {
-        
-        const userData = await User.findById({_id:req.params.id})
+        const user = await User.findOne({email:email})
+        const userData = await User.findById({_id:user._id})
         if(userData){
-            const data = await User.findByIdAndUpdate({_id:req.params.id},{$set:req.body})
+            const data = await User.findByIdAndUpdate({_id:user._id},{$set:req.body})
             res.status(200).json("user profile has been updated");
         }
         else{
@@ -232,9 +239,11 @@ const editUserProfile = async(req,res,next)=>{
 }
 
 const deleteUserAccount = async(req,res,next)=>{
-    if(req.body.user_id === req.params.id){
+    const email = req.body.email;
+    if(email){
         try {
-            const user = await User.findByIdAndDelete(req.body.user_id)
+            const userData = await User.findOne({email:email})
+            const user = await User.findByIdAndDelete({_id:userData._id})
             res.status(200).send({success:true, msg:"Account has been deleted"});
         } catch (error) {
             res.status(400).send({success:false, msg:error.message});
@@ -242,7 +251,7 @@ const deleteUserAccount = async(req,res,next)=>{
 
     }
     else{
-        res.status(400).json("you can only delete your account")
+        res.status(400).json("your email not exit and can not delete your account")
     }
 }
 

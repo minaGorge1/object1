@@ -21,9 +21,9 @@ router.put("/SPlogout",spController.logout);
 router.post("/SPupdatePassword",spController.changepassword);
 router.post("/SPforgetPassword",spController.forget_password);
 router.post("/SPresetPassword",spController.reset_password);
-router.get("/SP/:id",spController.getUserProfile);
-router.put("/SP/:id",spController.editUserProfile);
-router.delete("/SP/:id/delete",spController.deleteUserAccount);
+router.get("/SPProfile",spController.getUserProfile);
+router.put("/updateSPProfile",spController.editUserProfile);
+router.delete("/SPdelete",spController.deleteUserAccount);
 router.post("/SPverification",spController.sendVerificationLink);
 
 

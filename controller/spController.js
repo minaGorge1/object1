@@ -9,40 +9,40 @@ const sendMail = require("../utils/sendEmail")
 const ServiceProvider = require('../models/spModel')
 const createToken = require("../utils/createToken");
 
-const sendResetPasswordMail = async(email,token) =>{
-    try {
-        const transporter = nodemailer.createTransport({
-            host:'smtp.gmail.com',
-            port:587,
-            secure:false,
-            requireTLS:true,
-            auth:{
-                user:config.emailUser,
-                pass:config.emailPassword,
-            }
-        });
-        const mailOptions = {
-            from:config.emailUser,
-            to:email,
-            subject:'For reset password',
-            html:"<p> hii "+',Please copy the link <a href ="http://localhost:3000/reset-password?token='+token+'"> and reset your password</a>'
-        }
-        transporter.sendMail(mailOptions,(error,info)=>{
-            if(error){
-                console.log(error)
-            }
-            else{
-                console.log("Mail has been sent :",info.response);
-            }
+// const sendResetPasswordMail = async(email,token) =>{
+//     try {
+//         const transporter = nodemailer.createTransport({
+//             host:'smtp.gmail.com',
+//             port:587,
+//             secure:false,
+//             requireTLS:true,
+//             auth:{
+//                 user:config.emailUser,
+//                 pass:config.emailPassword,
+//             }
+//         });
+//         const mailOptions = {
+//             from:config.emailUser,
+//             to:email,
+//             subject:'For reset password',
+//             html:"<p> hii "+',Please copy the link <a href ="http://localhost:3000/reset-password?token='+token+'"> and reset your password</a>'
+//         }
+//         transporter.sendMail(mailOptions,(error,info)=>{
+//             if(error){
+//                 console.log(error)
+//             }
+//             else{
+//                 console.log("Mail has been sent :",info.response);
+//             }
 
-        })
-    } 
-    catch (error) {
-        res.status(400).send({success:false, msg:error.message})
+//         })
+//     } 
+//     catch (error) {
+//         res.status(400).send({success:false, msg:error.message})
         
-    }
+//     }
 
-}
+// }
 
 //bycrpt password
 const securePassword = (password)=>{
@@ -133,16 +133,17 @@ const logout = (req,res, next) =>{
 const changepassword = async(req,res,next)=>
 {
     try {
-        const user_id = req.body.serviceProvider_id;
+        const email = req.body.email;
         const password = req.body.password;
-    
-        const data = await ServiceProvider.findOne({_id:user_id})
+
+        const user = await ServiceProvider.findOne({email:email})
+        const data = await ServiceProvider.findOne({_id:user._id})
             if(data)
             {
             const newpassword = securePassword(password);
             const userData = await ServiceProvider.findByIdAndUpdate(
                         {
-                            _id:user_id
+                            _id:user._id
                         },
                         {
                             $set:{
@@ -168,7 +169,7 @@ const forget_password = async(req,res,next)=>{
         if(userData){
             const randomString = randomstring.generate();
             const Data = await ServiceProvider.updateOne({email:email},{$set:{token:randomString}});
-            sendResetPasswordMail(userData.email,randomString);
+            sendMail.sendSPResetPasswordMail(userData.email,randomString);
             res.status(200).send({success:true, msg:"Please check your email inbox"})
 
         }
@@ -180,8 +181,8 @@ const forget_password = async(req,res,next)=>{
     {
         res.status(400).send({success:false, msg:error.message});
     }
-
 }
+
 const reset_password = async(req,res,next)=>{
     try {
         const token = req.query.token;
@@ -207,22 +208,24 @@ const reset_password = async(req,res,next)=>{
 }
 //profile
 const getUserProfile = async(req,res,next)=>{
-    if(req.params.id){
+    const email = req.body.email
         try {
-            const user = await ServiceProvider.findById(req.params.id)
+            const userData = await ServiceProvider.findOne({email:email})
+            const user = await ServiceProvider.findById({_id:userData._id})
             return res.status(200).json(user)
         } 
         catch (error) {
             return res.status(400).json('user id is required');
     }
-}
+
 }
 const editUserProfile = async(req,res,next)=>{
+    const email = req.body.email
     try {
-        
-        const userData = await ServiceProvider.findById({_id:req.params.id})
+        const user = await ServiceProvider.findOne({email:email})
+        const userData = await ServiceProvider.findById({_id:user._id})
         if(userData){
-            const data = await ServiceProvider.findByIdAndUpdate({_id:req.params.id},{$set:req.body})
+            const data = await ServiceProvider.findByIdAndUpdate({_id:user._id},{$set:req.body})
             res.status(200).json("user profile has been updated");
         }
         else{
@@ -234,9 +237,11 @@ const editUserProfile = async(req,res,next)=>{
 }
 
 const deleteUserAccount = async(req,res,next)=>{
-    if(req.body.serviceProvider_id === req.params.id){
+    const email = req.body.email;
+    if(email){
         try {
-            const user = await ServiceProvider.findByIdAndDelete(req.body.serviceProvider_id)
+            const userData = await ServiceProvider.findOne({email:email})
+            const user = await ServiceProvider.findByIdAndDelete({_id:userData._id})
             res.status(200).send({success:true, msg:"Account has been deleted"});
         } catch (error) {
             res.status(400).send({success:false, msg:error.message});
@@ -244,7 +249,7 @@ const deleteUserAccount = async(req,res,next)=>{
 
     }
     else{
-        res.status(400).json("you can only delete your account")
+        res.status(400).json("your email not exit and can not delete your account")
     }
 }
 const sendVerificationLink = async (req,res,next)=>{

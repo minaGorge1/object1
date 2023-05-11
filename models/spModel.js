@@ -3,10 +3,6 @@ const mongoose = require("mongoose");
 
 const serviceProviderSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    name:{
-        type:String,
-        default:""
-    },
     serviceName:{
         type:String,
         required:true
@@ -19,7 +15,8 @@ const serviceProviderSchema = mongoose.Schema({
     },
     username:{
         type:String,
-        required:true
+        required:true,
+        unique: true, 
     },
     Address:{
         type:String,
