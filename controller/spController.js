@@ -1,48 +1,13 @@
+
 const jwt = require('jsonwebtoken');
 const mongoose = require("mongoose");
+const MongoClient = require('mongodb').MongoClient
 const bcrypt = require('bcrypt');
 const randomstring = require("randomstring");
-const nodemailer = require("nodemailer")
 
-const config = require("../config/config")
 const sendMail = require("../utils/sendEmail")
 const ServiceProvider = require('../models/spModel')
 const createToken = require("../utils/createToken");
-
-// const sendResetPasswordMail = async(email,token) =>{
-//     try {
-//         const transporter = nodemailer.createTransport({
-//             host:'smtp.gmail.com',
-//             port:587,
-//             secure:false,
-//             requireTLS:true,
-//             auth:{
-//                 user:config.emailUser,
-//                 pass:config.emailPassword,
-//             }
-//         });
-//         const mailOptions = {
-//             from:config.emailUser,
-//             to:email,
-//             subject:'For reset password',
-//             html:"<p> hii "+',Please copy the link <a href ="http://localhost:3000/reset-password?token='+token+'"> and reset your password</a>'
-//         }
-//         transporter.sendMail(mailOptions,(error,info)=>{
-//             if(error){
-//                 console.log(error)
-//             }
-//             else{
-//                 console.log("Mail has been sent :",info.response);
-//             }
-
-//         })
-//     } 
-//     catch (error) {
-//         res.status(400).send({success:false, msg:error.message})
-        
-//     }
-
-// }
 
 //bycrpt password
 const securePassword = (password)=>{
@@ -269,7 +234,44 @@ const sendVerificationLink = async (req,res,next)=>{
         console.log(error.message);
     }
 }
-
+//create post
+const createPost = async(req,res,next)=>{
+    try {
+        const category = req.body.category
+        const user = await ServiceProvider.findOne({category:category})
+        //const id = req.session.serviceProvider_id
+        //const userData = await ServiceProvider.findById({_id:user._id})
+        //console.log(userData.category);
+        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
+            var database = client.db("mydatabase");
+            database.collection(user.category).insertOne({
+            postDetails:req.body.postDetails,
+            image:req.file.filename
+        });
+        console.log(user.category);
+        })
+        res.status(200).send({success:true, message:"created post successful"});
+        
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+//services
+const Hotel = async(req,res,next)=>{
+    try {
+        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
+            var database = client.db("mydatabase");
+            database.collection("Hotel").find().toArray().then(users =>{
+                console.log(users)
+                res.status(200).json({data:users})
+                //res.status(200).send({success:true, data:users});
+            })
+            
+    })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 module.exports = {
     createNewUser,
@@ -282,5 +284,7 @@ module.exports = {
     getUserProfile,
     editUserProfile,
     deleteUserAccount,
-    sendVerificationLink
+    sendVerificationLink,
+    createPost,
+    Hotel
 }

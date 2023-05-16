@@ -1,11 +1,18 @@
-
 const express = require('express')
 const router = require('express').Router();
-const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
-const mongoose = require("mongoose");
+const multer = require("multer");
+const path = require('path');
 
-const bcrypt = require('bcrypt');
+const storage = multer.diskStorage({
+    destination:(req,file,cb)=>{
+        cb(null,path.join(__dirname,"../public/userImages"));
+    },
+    filename:(req,file,cb)=>{
+        cb(null, file.originalname + '-' + Date.now()) 
+        
+    }
+})
+const upload = multer({storage:storage});
 
 
 const spController = require('../controller/spController');
@@ -25,6 +32,8 @@ router.get("/SPProfile",spController.getUserProfile);
 router.put("/updateSPProfile",spController.editUserProfile);
 router.delete("/SPdelete",spController.deleteUserAccount);
 router.post("/SPverification",spController.sendVerificationLink);
+router.post("/createPost",upload.single('image'),spController.createPost);
+router.get("/hotel",spController.Hotel);
 
 
 module.exports = router;
