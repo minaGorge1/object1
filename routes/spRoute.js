@@ -34,6 +34,14 @@ router.delete("/SPdelete",spController.deleteUserAccount);
 router.post("/SPverification",spController.sendVerificationLink);
 router.post("/createPost",upload.single('image'),spController.createPost);
 router.get("/hotel",spController.Hotel);
+router.get("/cinema",spController.Cinema);
+router.get("/bazaar",spController.Bazaar);
+router.get("/resortAndVillage",spController.ResortAndVillage);
+router.get("/naturalPreserves",spController.NaturalPreserves);
+router.get("/tourismCompany",spController.TourismCompany);
+router.get("/archaeologicalSites",spController.ArchaeologicalSites);
+router.get("/restaurantAndCafe",spController.RestaurantAndCafe);
+router.get("/transportationCompany",spController.TransportationCompany);
 
 
 module.exports = router;

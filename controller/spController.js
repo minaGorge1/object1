@@ -239,16 +239,16 @@ const createPost = async(req,res,next)=>{
     try {
         const category = req.body.category
         const user = await ServiceProvider.findOne({category:category})
-        //const id = req.session.serviceProvider_id
-        //const userData = await ServiceProvider.findById({_id:user._id})
-        //console.log(userData.category);
+
         MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
             var database = client.db("mydatabase");
             database.collection(user.category).insertOne({
+            serviceName:user.serviceName,
             postDetails:req.body.postDetails,
             image:req.file.filename
-        });
-        console.log(user.category);
+        }).then(post =>{
+            console.log(post);
+        })
         })
         res.status(200).send({success:true, message:"created post successful"});
         
@@ -263,6 +263,20 @@ const Hotel = async(req,res,next)=>{
             var database = client.db("mydatabase");
             database.collection("Hotel").find().toArray().then(users =>{
                 console.log(users)
+               // res.status(200).json({data:users})
+                res.status(200).send({success:true, data:users});
+            })
+    })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+const Cinema = async(req,res,next)=>{
+    try {
+        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
+            var database = client.db("mydatabase");
+            database.collection("Cinema").find().toArray().then(users =>{
+                console.log(users)
                 res.status(200).json({data:users})
                 //res.status(200).send({success:true, data:users});
             })
@@ -272,7 +286,111 @@ const Hotel = async(req,res,next)=>{
         console.log(error.message);
     }
 }
-
+const Bazaar = async(req,res,next)=>{
+    try {
+        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
+            var database = client.db("mydatabase");
+            database.collection("Bazaar").find().toArray().then(users =>{
+                console.log(users)
+                res.status(200).json({data:users})
+                //res.status(200).send({success:true, data:users});
+            })
+            
+    })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+const ResortAndVillage = async(req,res,next)=>{
+    try {
+        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
+            var database = client.db("mydatabase");
+            database.collection("Resort & Village").find().toArray().then(users =>{
+                console.log(users)
+                res.status(200).json({data:users})
+                //res.status(200).send({success:true, data:users});
+            })
+            
+    })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+const NaturalPreserves = async(req,res,next)=>{
+    try {
+        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
+            var database = client.db("mydatabase");
+            database.collection("Natural Preserves").find().toArray().then(users =>{
+                console.log(users)
+                res.status(200).json({data:users})
+                //res.status(200).send({success:true, data:users});
+            })
+            
+    })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+const TourismCompany = async(req,res,next)=>{
+    try {
+        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
+            var database = client.db("mydatabase");
+            database.collection("Tourism Company").find().toArray().then(users =>{
+                console.log(users)
+                res.status(200).json({data:users})
+                //res.status(200).send({success:true, data:users});
+            })
+            
+    })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+const ArchaeologicalSites = async(req,res,next)=>{
+    try {
+        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
+            var database = client.db("mydatabase");
+            database.collection("Archaeological Sites").find().toArray().then(users =>{
+                console.log(users)
+                res.status(200).json({data:users})
+                //res.status(200).send({success:true, data:users});
+            })
+            
+    })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+const RestaurantAndCafe = async(req,res,next)=>{
+    try {
+        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
+            var database = client.db("mydatabase");
+            database.collection("Restaurant & Cafe").find().toArray().then(users =>{
+                console.log(users)
+                res.status(200).json({data:users})
+                //res.status(200).send({success:true, data:users});
+            })
+            
+    })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+const TransportationCompany = async(req,res,next)=>{
+    try {
+        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
+            var database = client.db("mydatabase");
+            database.collection("Transportation Company").find().toArray().then(users =>{
+                console.log(users)
+                res.status(200).json({data:users})
+                //res.status(200).send({success:true, data:users});
+            })
+            
+    })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 module.exports = {
     createNewUser,
     verifyMail,
@@ -286,5 +404,13 @@ module.exports = {
     deleteUserAccount,
     sendVerificationLink,
     createPost,
-    Hotel
+    Hotel,
+    Cinema,
+    Bazaar,
+    ResortAndVillage,
+    NaturalPreserves,
+    TourismCompany,
+    ArchaeologicalSites,
+    RestaurantAndCafe,
+    TransportationCompany
 }

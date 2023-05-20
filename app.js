@@ -50,6 +50,6 @@ app.use((error, req, res, next) => {
 });
 
 var port = process.env.PORT || 3000
-app.listen(port, ()=>{
+app.listen(3000, ()=>{
     console.log('connected to server')
 })
