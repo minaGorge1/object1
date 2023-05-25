@@ -1,4 +1,4 @@
-runtime: nodejs18.13.0
+runtime: nodejs18
 
 service: default
 

@@ -10,40 +10,6 @@ const sendMail = require("../utils/sendEmail");
 const config = require("../config/config")
 const createToken = require("../utils/createToken");
 
-
-// const sendResetPasswordMail = (email,token)=>{
-//     try {
-//         const transporter = nodemailer.createTransport
-//         ({
-//             host:'smtp.gmail.com',
-//             port:587,
-//             secure:false,
-//             requireTLS:true,
-//             auth:{
-//                 user:config.emailUser,
-//                 pass:config.passwordUser
-//             }
-//         });
-//             const mailOptions = {
-//                 from: config.emailUser,
-//                 to: email,
-//                 subject: 'password Reset',
-//                 html:'<p>Hi please copy the link to <a href="http://localhost:3000/resetPassword?token='+token+'">Reset</a> your password.</p>'
-//             };
-            
-//             transporter.sendMail(mailOptions, function(error, info){
-//                 if (error) {
-//                     console.log(error);
-//                 } else {
-//                     console.log('Email sent: ' + info.response);
-//                 }
-//             })
-
-//     } catch (error) {
-//         console.log(error)
-//     }
-
-// }
 // bycrpt password
 const securePassword = (password)=>{
     try {
