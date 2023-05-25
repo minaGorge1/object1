@@ -32,7 +32,7 @@ router.get("/SPProfile",spController.getUserProfile);
 router.put("/updateSPProfile",spController.editUserProfile);
 router.delete("/SPdelete",spController.deleteUserAccount);
 router.post("/SPverification",spController.sendVerificationLink);
-router.post("/createPost",upload.single('image'),spController.createPost);
+router.post("/createPost",upload.single('image'),spController.spCreatePost);
 router.get("/hotel",spController.Hotel);
 router.get("/cinema",spController.Cinema);
 router.get("/bazaar",spController.Bazaar);

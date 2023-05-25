@@ -6,7 +6,8 @@ const bcrypt = require('bcrypt');
 const randomstring = require("randomstring");
 
 const sendMail = require("../utils/sendEmail")
-const ServiceProvider = require('../models/spModel')
+const ServiceProvider = require('../models/spModel');
+const Services = require("../models/serviceModel");
 const createToken = require("../utils/createToken");
 
 //bycrpt password
@@ -235,22 +236,48 @@ const sendVerificationLink = async (req,res,next)=>{
     }
 }
 //create post
-const createPost = async(req,res,next)=>{
-    try {
-        const category = req.body.category
-        const user = await ServiceProvider.findOne({category:category})
+// const createPost = async(req,res,next)=>{
+//     try {
+//         const category = req.body.category
+//         const user = await ServiceProvider.findOne({category:category})
 
-        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
-            var database = client.db("mydatabase");
-            database.collection(user.category).insertOne({
-            serviceName:user.serviceName,
-            postDetails:req.body.postDetails,
-            image:req.file.filename
-        }).then(post =>{
-            console.log(post);
-        })
-        })
-        res.status(200).send({success:true, message:"created post successful"});
+//         MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
+//             var database = client.db("mydatabase");
+//             database.collection(user.category).insertOne({
+//             serviceName:user.serviceName,
+//             postDetails:req.body.postDetails,
+//             image:req.file.filename
+//         }).then(post =>{
+//             console.log(post);
+//         })
+//         })
+//         res.status(200).send({success:true, message:"created post successful"});
+        
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+// }
+
+const spCreatePost = async(req,res,next)=>{
+    try {
+        const id = req.session.serviceProvider_id
+        const userData = await ServiceProvider.findById({_id:id})
+        console.log(userData.category);
+            const service = new Services({
+                offerTitle:req.body.offerTitle,
+                postDetails:req.body.postDetails,
+                price:req.body.price,
+                category:userData.category,
+                serviceName:userData.serviceName,
+                image:req.file.filename
+            });
+            const post = await service.save();
+            if(post){
+                res.status(200).send({success:true,data:post,msg:"your offer has been successfully posted"});
+            }
+            else{
+                res.status(200).send({success:false,msg:"your offer has been failed"})
+            }
         
     } catch (error) {
         console.log(error.message);
@@ -403,7 +430,7 @@ module.exports = {
     editUserProfile,
     deleteUserAccount,
     sendVerificationLink,
-    createPost,
+    spCreatePost,
     Hotel,
     Cinema,
     Bazaar,
