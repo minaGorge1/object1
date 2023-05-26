@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 const mongoose = require("mongoose");
 const MongoClient = require('mongodb').MongoClient
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const randomstring = require("randomstring");
 
 const sendMail = require("../utils/sendEmail")
