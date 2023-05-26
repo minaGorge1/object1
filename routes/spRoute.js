@@ -2,7 +2,7 @@ const express = require('express')
 const router = require('express').Router();
 const multer = require("multer");
 const path = require('path');
-const authenticateUser = require("../middlewares/authenticateUser");
+
 
 const storage = multer.diskStorage({
     destination:(req,file,cb)=>{
@@ -45,10 +45,8 @@ router.get("/tourismCompany",spController.TourismCompany);
 router.get("/archaeologicalSites",spController.ArchaeologicalSites);
 router.get("/restaurantAndCafe",spController.RestaurantAndCafe);
 router.get("/transportationCompany",spController.TransportationCompany);
-router.post("/authenticated", authenticateUser, (req,res)=>{
-        console.log(req.user);
-   // res.json(req.user);
-});
+router.get("/profile",auth,spController.getSP_forClient);
+
 
 
 module.exports = router;

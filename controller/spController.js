@@ -332,79 +332,122 @@ const ResortAndVillage = async(req,res,next)=>{
 }
 const NaturalPreserves = async(req,res,next)=>{
     try {
-        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
-            var database = client.db("mydatabase");
-            database.collection("Natural Preserves").find().toArray().then(users =>{
-                console.log(users)
-                res.status(200).json({data:users})
-                //res.status(200).send({success:true, data:users});
-            })
-            
-    })
+        const users = await Services.find({category:"Natural Preserves"});
+        res.status(200).send({success:true, data:users});
     } catch (error) {
         console.log(error.message);
     }
 }
 const TourismCompany = async(req,res,next)=>{
     try {
-        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
-            var database = client.db("mydatabase");
-            database.collection("Tourism Company").find().toArray().then(users =>{
-                console.log(users)
-                res.status(200).json({data:users})
-                //res.status(200).send({success:true, data:users});
-            })
-            
-    })
+        const users = await Services.find({category:"Tourism Company"});
+        res.status(200).send({success:true, data:users});
     } catch (error) {
         console.log(error.message);
     }
 }
 const ArchaeologicalSites = async(req,res,next)=>{
     try {
-        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
-            var database = client.db("mydatabase");
-            database.collection("Archaeological Sites").find().toArray().then(users =>{
-                console.log(users)
-                res.status(200).json({data:users})
-                //res.status(200).send({success:true, data:users});
-            })
-            
-    })
+        const users = await Services.find({category:"Archaeological Sites"});
+        res.status(200).send({success:true, data:users});
     } catch (error) {
         console.log(error.message);
     }
 }
 const RestaurantAndCafe = async(req,res,next)=>{
     try {
-        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
-            var database = client.db("mydatabase");
-            database.collection("Restaurant & Cafe").find().toArray().then(users =>{
-                console.log(users)
-                res.status(200).json({data:users})
-                //res.status(200).send({success:true, data:users});
-            })
-            
-    })
+        const users = await Services.find({category:"Restaurant & Cafe"});
+        res.status(200).send({success:true, data:users});
     } catch (error) {
         console.log(error.message);
     }
 }
 const TransportationCompany = async(req,res,next)=>{
     try {
-        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
-            var database = client.db("mydatabase");
-            database.collection("Transportation Company").find().toArray().then(users =>{
-                console.log(users)
-                res.status(200).json({data:users})
-                //res.status(200).send({success:true, data:users});
-            })
-            
-    })
+        const users = await Services.find({category:"Transportation Company"});
+        res.status(200).send({success:true, data:users});
     } catch (error) {
         console.log(error.message);
     }
 }
+//get sp profile for user
+const getSP_forClient = async (req,res,next)=>{
+    try {
+        const id = req.userId;
+        const userData = await ServiceProvider.findById({_id:id})
+        const category = userData.category;
+        if (category ==="Hotel"){
+            const userData = await Services.findOne({category:"Hotel"});
+            console.log(userData.serviceName);
+            const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
+            console.log(data);
+            res.status(200).send({success:true,Partner_Profile:data});
+        }
+        else if (category ===" Cinema"){
+            const userData = await Services.findOne({category:"Cinema"});
+            console.log(userData.serviceName);
+            const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
+            console.log(data);
+            res.status(200).send({success:true,Partner_Profile:data});
+        }
+        else if (category==="Bazaar"){
+            const userData = await Services.findOne({category:"Bazaar"});
+            console.log(userData.serviceName);
+            const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
+            console.log(data);
+            res.status(200).send({success:true,Partner_Profile:data});
+        }
+        else if (category==="Resort & Village"){
+            const userData = await Services.findOne({category:"Resort & Village"});
+            console.log(userData.serviceName);
+            const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
+            console.log(data);
+            res.status(200).send({success:true,Partner_Profile:data});
+        }
+        else if (category === "Natural Preserve"){
+            const userData = await Services.findOne({category:"Natural Preserve"});
+            console.log(userData.serviceName);
+            const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
+            console.log(data);
+            res.status(200).send({success:true,Partner_Profile:data});
+        }
+        else if (category==="Tourism Company"){
+            const userData = await Services.findOne({category:"Tourism Company"});
+            console.log(userData.serviceName);
+            const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
+            console.log(data);
+            res.status(200).send({success:true,Partner_Profile:data});
+        }
+        else if (category==="Archaeological Site"){
+            const userData = await Services.findOne({category:"Archaeological Site"});
+            console.log(userData.serviceName);
+            const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
+            console.log(data);
+            res.status(200).send({success:true,Partner_Profile:data});
+        }
+        else if (category==="Restaurant & Cafe"){
+            const userData = await Services.findOne({category:"Restaurant & Cafe"});
+            console.log(userData.serviceName);
+            const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
+            console.log(data);
+            res.status(200).send({success:true,Partner_Profile:data});
+        }
+        else if (category==="Transportation Company"){
+            const userData = await Services.findOne({category:"Transportation Company"});
+            console.log(userData.serviceName);
+            const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
+            console.log(data);
+            res.status(200).send({success:true,Partner_Profile:data});
+        }
+        else{
+            console.log("category not exit")
+        }
+        
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 module.exports = {
     createNewUser,
     verifyMail,
@@ -427,5 +470,6 @@ module.exports = {
     TourismCompany,
     ArchaeologicalSites,
     RestaurantAndCafe,
-    TransportationCompany
+    TransportationCompany,
+    getSP_forClient
 }
