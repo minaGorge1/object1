@@ -1,16 +1,23 @@
 
-const express = require('express')
-const bodyParser = require('body-parser')
-const morgan = require('morgan')
+const express = require('express');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const dotenv = require('dotenv').config;
 const mongoose = require("mongoose");
-const DB_URL = "mongodb://127.0.0.1/mydatabase";
-// const DB_URL = "mongodb://hostname/hostIP:27017/mydatabase";
+//const DB_URL = "mongodb://127.0.0.1/mydatabase";
+
+
+const DB_URL = "mongodb+srv://as2461:9yOin73KLZPzRHXj@mtgy.acvqmrs.mongodb.net/mydatabase?retryWrites=true&w=majority";
 
 
 const userRouter = require('./routes/userRouter')
 const SPRouter = require("./routes/spRoute")
 
-mongoose.connect(DB_URL,{useNewUrlParser:true,useUnifiedTopology: true,})  
+
+
+mongoose.connect(DB_URL,{useNewUrlParser:true,useUnifiedTopology: true,}).then(()=>{
+    console.log("connected to database");
+})  
 const app = express();
 
 app.use(morgan("dev"));

@@ -20,10 +20,13 @@ const {
     signupValidator,
     loginValidator,
 } = require('../utils/validators/authSPValidator');
+const auth = require("../middlewares/auth");
 
 router.post("/SPsignup",signupValidator,spController.createNewUser);
 router.get("/SPverify/:id",spController.verifyMail);
 router.post("/SPsignin",loginValidator,spController.postSignin);
+router.get("/SPtest",auth,spController.verfiyLogin);
+//router.get("/SPtest",auth,spController.verfiyLogin);
 router.put("/SPlogout",spController.logout);
 router.post("/SPupdatePassword",spController.changepassword);
 router.post("/SPforgetPassword",spController.forget_password);

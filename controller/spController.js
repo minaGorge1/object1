@@ -83,6 +83,15 @@ const postSignin = async(req,res,next)=>{
         res.status(400).send(error.message);
     }
 }
+// verfiy login 
+const verfiyLogin = async(req,res,next) =>{
+    try {
+        res.setHeader('X-Foo', 'bar')
+        res.status(200).send({success:true ,msg:"Authenticated"});
+    } catch (error) {
+        res.status(401).send(error.message);
+    }
+}
 // signout
 const logout = (req,res, next) =>{
     const authHeader = req.headers["authorization"];
@@ -260,7 +269,8 @@ const sendVerificationLink = async (req,res,next)=>{
 
 const spCreatePost = async(req,res,next)=>{
     try {
-        const id = req.session.serviceProvider_id
+        // const id = req.session.serviceProvider_id
+        
         const userData = await ServiceProvider.findById({_id:id})
         console.log(userData.category);
             const service = new Services({
@@ -422,6 +432,7 @@ module.exports = {
     createNewUser,
     verifyMail,
     postSignin,
+    verfiyLogin,
     logout,
     changepassword,
     forget_password,
