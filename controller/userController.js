@@ -73,7 +73,7 @@ const postSignin = async(req,res,next)=>{
                 const tokenData = await createToken(userData._id);
                     res.status(201).json({
                         success:true,
-                        message: "Auth successful",
+                        message: "Signin successfully",
                         token:tokenData
                     });
             }
@@ -82,7 +82,7 @@ const postSignin = async(req,res,next)=>{
             }
         }
         else{
-            res.status(200).send({success:false,message:"Login details are incorrect"});
+            res.status(200).send({success:false,message:"Signin details are incorrect"});
         }
     } catch (error) {
         res.status(400).send({success:false},error.message);
