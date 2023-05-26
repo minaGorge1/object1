@@ -57,7 +57,7 @@ const verifyMail = async(req,res,next)=>{
 
     } catch (error) {
         console.log(error.message);
-        res.status(400).send(error.message);
+        res.status(400).send({success:false},error.message);
     }
 }
 
@@ -72,19 +72,20 @@ const postSignin = async(req,res,next)=>{
             if (passwordMatch){
                 const tokenData = await createToken(userData._id);
                     res.status(201).json({
+                        success:true,
                         message: "Auth successful",
                         token:tokenData
                     });
             }
             else{
-                res.status(201).json({message: "password is incorrect"});
+                res.status(201).json({success:false ,message: "password is incorrect"});
             }
         }
         else{
             res.status(200).send({success:false,message:"Login details are incorrect"});
         }
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send({success:false},error.message);
     }
 }
 // signout
@@ -127,7 +128,7 @@ const changepassword = async(req,res,next)=>
         }
     
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send({success:false},error.message);
     }
 }
 const forget_password = async(req,res,next)=>{
@@ -194,7 +195,7 @@ const editUserProfile = async(req,res,next)=>{
         const userData = await User.findById({_id:user._id})
         if(userData){
             const data = await User.findByIdAndUpdate({_id:user._id},{$set:req.body})
-            res.status(200).json("user profile has been updated");
+            res.status(200).json({success:true},"user profile has been updated");
         }
         else{
             res.status(500).json(err)

@@ -2,6 +2,7 @@ const express = require('express')
 const router = require('express').Router();
 const multer = require("multer");
 const path = require('path');
+const authenticateUser = require("../middlewares/authenticateUser");
 
 const storage = multer.diskStorage({
     destination:(req,file,cb)=>{
@@ -26,7 +27,6 @@ router.post("/SPsignup",signupValidator,spController.createNewUser);
 router.get("/SPverify/:id",spController.verifyMail);
 router.post("/SPsignin",loginValidator,spController.postSignin);
 router.get("/SPtest",auth,spController.verfiyLogin);
-//router.get("/SPtest",auth,spController.verfiyLogin);
 router.put("/SPlogout",spController.logout);
 router.post("/SPupdatePassword",spController.changepassword);
 router.post("/SPforgetPassword",spController.forget_password);
@@ -35,7 +35,7 @@ router.get("/SPProfile",spController.getUserProfile);
 router.put("/updateSPProfile",spController.editUserProfile);
 router.delete("/SPdelete",spController.deleteUserAccount);
 router.post("/SPverification",spController.sendVerificationLink);
-router.post("/createPost",upload.single('image'),spController.spCreatePost);
+router.post("/createPost",auth,upload.single('image'),spController.spCreatePost);
 router.get("/hotel",spController.Hotel);
 router.get("/cinema",spController.Cinema);
 router.get("/bazaar",spController.Bazaar);
@@ -45,6 +45,10 @@ router.get("/tourismCompany",spController.TourismCompany);
 router.get("/archaeologicalSites",spController.ArchaeologicalSites);
 router.get("/restaurantAndCafe",spController.RestaurantAndCafe);
 router.get("/transportationCompany",spController.TransportationCompany);
+router.post("/authenticated", authenticateUser, (req,res)=>{
+        console.log(req.user);
+   // res.json(req.user);
+});
 
 
 module.exports = router;

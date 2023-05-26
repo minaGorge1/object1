@@ -9,6 +9,7 @@ const sendMail = require("../utils/sendEmail")
 const ServiceProvider = require('../models/spModel');
 const Services = require("../models/serviceModel");
 const createToken = require("../utils/createToken");
+const auth = require("../middlewares/auth");
 
 //bycrpt password
 const securePassword = (password)=>{
@@ -41,7 +42,7 @@ const createNewUser = async(req,res,next) =>{
             res.status(200).send({success:false,msg:"your register has been failed"})
         }
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send({success:false},error.message);
     }
 }
 const verifyMail = async(req,res,next)=>{
@@ -54,7 +55,7 @@ const verifyMail = async(req,res,next)=>{
         });
     } catch (error) {
         console.log(error.message);
-        res.status(400).send(error.message);
+        res.status(400).send({success:false},error.message);
     }
 }
 const postSignin = async(req,res,next)=>{
@@ -68,19 +69,20 @@ const postSignin = async(req,res,next)=>{
             if (passwordMatch){
                 const tokenData = await createToken(userData._id);
                     res.status(201).json({
-                        message: "Auth successful",
+                        success:true,
+                        message: "Login successfully",
                         token:tokenData
                     });
             }
             else{
-                res.status(201).json({message: "password is incorrect"});
+                res.status(201).json({success:false,message: "password is incorrect"});
             }
         }
         else{
             res.status(200).send({success:false,message:"Login details are incorrect"});
         }
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send({success:false},error.message);
     }
 }
 // verfiy login 
@@ -89,7 +91,7 @@ const verfiyLogin = async(req,res,next) =>{
         res.setHeader('X-Foo', 'bar')
         res.status(200).send({success:true ,msg:"Authenticated"});
     } catch (error) {
-        res.status(401).send(error.message);
+        res.status(401).send({success:false},error.message);
     }
 }
 // signout
@@ -133,7 +135,7 @@ const changepassword = async(req,res,next)=>
         }
     
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send({success:false},error.message);
     }
 }
 const forget_password = async(req,res,next)=>{
@@ -187,10 +189,10 @@ const getUserProfile = async(req,res,next)=>{
         try {
             const userData = await ServiceProvider.findOne({email:email})
             const user = await ServiceProvider.findById({_id:userData._id})
-            return res.status(200).json(user)
+            return res.status(200).json({success:true},user)
         } 
         catch (error) {
-            return res.status(400).json('user id is required');
+            return res.status(400).json({success:false},'user email is required');
     }
 
 }
@@ -201,10 +203,10 @@ const editUserProfile = async(req,res,next)=>{
         const userData = await ServiceProvider.findById({_id:user._id})
         if(userData){
             const data = await ServiceProvider.findByIdAndUpdate({_id:user._id},{$set:req.body})
-            res.status(200).json("user profile has been updated");
+            res.status(200).json({success:true},"user profile has been updated");
         }
         else{
-            res.status(500).json(err)
+            res.status(500).json({success:false},err)
         }
     } catch (error) {
         res.status(400).send({success:false, msg:error.message});
@@ -224,7 +226,7 @@ const deleteUserAccount = async(req,res,next)=>{
 
     }
     else{
-        res.status(400).json("your email not exit and can not delete your account")
+        res.status(400).json({success:false},"your email not exit and can not delete your account")
     }
 }
 const sendVerificationLink = async (req,res,next)=>{
@@ -270,7 +272,8 @@ const sendVerificationLink = async (req,res,next)=>{
 const spCreatePost = async(req,res,next)=>{
     try {
         // const id = req.session.serviceProvider_id
-        
+        const id = req.userId;
+        console.log(id)
         const userData = await ServiceProvider.findById({_id:id})
         console.log(userData.category);
             const service = new Services({
@@ -293,62 +296,36 @@ const spCreatePost = async(req,res,next)=>{
         console.log(error.message);
     }
 }
-//services
+// get services
 const Hotel = async(req,res,next)=>{
     try {
-        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
-            var database = client.db("mydatabase");
-            database.collection("Hotel").find().toArray().then(users =>{
-                console.log(users)
-               // res.status(200).json({data:users})
-                res.status(200).send({success:true, data:users});
-            })
-    })
+        const users = await Services.find({category:"Hotel"});
+        res.status(200).send({success:true, data:users});
+        
     } catch (error) {
         console.log(error.message);
     }
 }
 const Cinema = async(req,res,next)=>{
     try {
-        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
-            var database = client.db("mydatabase");
-            database.collection("Cinema").find().toArray().then(users =>{
-                console.log(users)
-                res.status(200).json({data:users})
-                //res.status(200).send({success:true, data:users});
-            })
-            
-    })
+        const users = await Services.find({category:"Cinema"});
+        res.status(200).send({success:true, data:users});
     } catch (error) {
         console.log(error.message);
     }
 }
 const Bazaar = async(req,res,next)=>{
     try {
-        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
-            var database = client.db("mydatabase");
-            database.collection("Bazaar").find().toArray().then(users =>{
-                console.log(users)
-                res.status(200).json({data:users})
-                //res.status(200).send({success:true, data:users});
-            })
-            
-    })
+        const users = await Services.find({category:"Bazaar"});
+        res.status(200).send({success:true, data:users});
     } catch (error) {
         console.log(error.message);
     }
 }
 const ResortAndVillage = async(req,res,next)=>{
     try {
-        MongoClient.connect('mongodb://127.0.0.1:27017' ,{useNewUrlParser: true}, (err, client)=> {
-            var database = client.db("mydatabase");
-            database.collection("Resort & Village").find().toArray().then(users =>{
-                console.log(users)
-                res.status(200).json({data:users})
-                //res.status(200).send({success:true, data:users});
-            })
-            
-    })
+        const users = await Services.find({category:"Resort & Village"});
+        res.status(200).send({success:true, data:users});
     } catch (error) {
         console.log(error.message);
     }
