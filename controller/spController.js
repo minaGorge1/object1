@@ -373,66 +373,66 @@ const TransportationCompany = async(req,res,next)=>{
 //get sp profile for user
 const getSP_forClient = async (req,res,next)=>{
     try {
-        const id = req.userId;
-        const userData = await ServiceProvider.findById({_id:id})
-        const category = userData.category;
-        if (category ==="Hotel"){
+        // const id = req.userId;
+        // const userData = await ServiceProvider.findById({_id:id})
+        // const category = userData.category;
+        if ("Hotel"){
             const userData = await Services.findOne({category:"Hotel"});
             console.log(userData.serviceName);
             const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
             console.log(data);
             res.status(200).send({success:true,Partner_Profile:data});
         }
-        else if (category ===" Cinema"){
+        else if (" Cinema"){
             const userData = await Services.findOne({category:"Cinema"});
             console.log(userData.serviceName);
             const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
             console.log(data);
             res.status(200).send({success:true,Partner_Profile:data});
         }
-        else if (category==="Bazaar"){
+        else if ("Bazaar"){
             const userData = await Services.findOne({category:"Bazaar"});
             console.log(userData.serviceName);
             const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
             console.log(data);
             res.status(200).send({success:true,Partner_Profile:data});
         }
-        else if (category==="Resort & Village"){
+        else if ("Resort & Village"){
             const userData = await Services.findOne({category:"Resort & Village"});
             console.log(userData.serviceName);
             const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
             console.log(data);
             res.status(200).send({success:true,Partner_Profile:data});
         }
-        else if (category === "Natural Preserve"){
+        else if ("Natural Preserve"){
             const userData = await Services.findOne({category:"Natural Preserve"});
             console.log(userData.serviceName);
             const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
             console.log(data);
             res.status(200).send({success:true,Partner_Profile:data});
         }
-        else if (category==="Tourism Company"){
+        else if ("Tourism Company"){
             const userData = await Services.findOne({category:"Tourism Company"});
             console.log(userData.serviceName);
             const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
             console.log(data);
             res.status(200).send({success:true,Partner_Profile:data});
         }
-        else if (category==="Archaeological Site"){
+        else if ("Archaeological Site"){
             const userData = await Services.findOne({category:"Archaeological Site"});
             console.log(userData.serviceName);
             const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
             console.log(data);
             res.status(200).send({success:true,Partner_Profile:data});
         }
-        else if (category==="Restaurant & Cafe"){
+        else if ("Restaurant & Cafe"){
             const userData = await Services.findOne({category:"Restaurant & Cafe"});
             console.log(userData.serviceName);
             const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
             console.log(data);
             res.status(200).send({success:true,Partner_Profile:data});
         }
-        else if (category==="Transportation Company"){
+        else if ("Transportation Company"){
             const userData = await Services.findOne({category:"Transportation Company"});
             console.log(userData.serviceName);
             const data = await ServiceProvider.findOne({serviceName:userData.serviceName});
