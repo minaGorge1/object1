@@ -9,7 +9,7 @@ const User = require('../models/userModel');
 const sendMail = require("../utils/sendEmail");
 const config = require("../config/config")
 const createToken = require("../utils/createToken");
-
+const auth = require("../middlewares/auth")
 // bycrpt password
 const securePassword = (password)=>{
     try {
@@ -89,15 +89,25 @@ const postSignin = async(req,res,next)=>{
     }
 }
 // signout
-const logout = (req,res, next) =>{
-    const authHeader = req.headers["authorization"];
-    jwt.sign(authHeader, "", { expiresIn: 1 } , (logout, err) => {
-    if (logout) {
-        res.send({msg : 'You have been Logged Out' });
-    } else {
-    res.send({msg:'Error'});
-    }
+const logout = async(req,res, next) =>{
+    const id = req.userId;
+    const data = User.findByIdAndUpdate({_id:id},{token:""},(err)=>{
+        if(err) return res.status(400).send({success:false},err);
+        res.status(200).send({success:true,msg:"You have been Logged Out"});
+    // await User.deleteToken(data.token,(err)=>{
+    //     if(err) return res.status(400).send({success:false},err);
+    //     res.Status(200).send({success:true,msg:"You have been Logged Out"});
     });
+
+
+    // const authHeader = req.headers["authorization"];
+    // jwt.sign(authHeader, "", { expiresIn: 1 } , (logout, err) => {
+    // if (logout) {
+    //     res.send({msg : 'You have been Logged Out' });
+    // } else {
+    // res.send({msg:'Error'});
+    // }
+    // });
 } 
 // update password
 

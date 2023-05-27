@@ -96,14 +96,19 @@ const verfiyLogin = async(req,res,next) =>{
 }
 // signout
 const logout = (req,res, next) =>{
-    const authHeader = req.headers["authorization"];
-    jwt.sign(authHeader, "", { expiresIn: 1 } , (logout, err) => {
-    if (logout) {
-        res.send({msg : 'You have been Logged Out' });
-    } else {
-    res.send({msg:'Error'});
-    }
+    const id = req.userId;
+    const data = ServiceProvider.findByIdAndUpdate({_id:id},{token:""},(err)=>{
+        if(err) return res.status(400).send({success:false},err);
+        res.status(200).send({success:true,msg:"You have been Logged Out"});
     });
+    // const authHeader = req.headers["authorization"];
+    // jwt.sign(authHeader, "", { expiresIn: 1 } , (logout, err) => {
+    // if (logout) {
+    //     res.send({msg : 'You have been Logged Out' });
+    // } else {
+    // res.send({msg:'Error'});
+    // }
+    // });
 } 
 // update password
 

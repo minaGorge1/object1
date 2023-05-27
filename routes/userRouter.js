@@ -10,11 +10,12 @@ const {
     signupValidator,
     loginValidator,
 } = require('../utils/validators/authValidator');
+const auth = require("../middlewares/auth");
 
 router.post("/signup",signupValidator,userController.createNewUser);
 router.get("/verify",userController.verifyMail);
 router.post("/signin",loginValidator,userController.postSignin);
-router.put("/signout",userController.logout);
+router.get("/signout",auth,userController.logout);
 router.post("/updatePassword",userController.changepassword);
 router.post("/forgetPassword",userController.forget_password);
 router.post("/resetPassword",userController.reset_password);
