@@ -53,7 +53,6 @@ const verifyMail = async(req,res,next)=>{
         const updateinfo = await ServiceProvider.findByIdAndUpdate({_id:tokenData._id},{$set:{is_varified:1}},{new:true});
         res.status(201).json({
             success:true,
-            data:updateinfo,
             message: "Email verified"
         });
     } catch (error) {
@@ -253,7 +252,7 @@ const sendVerificationLink = async (req,res,next)=>{
             res.status(200).send({success:true, message:"Reset verification Mail"});
         }
         else{
-            res.status(400).send({success:false,message:"this mail is not exist"})
+            res.status(400).send({success:false,message:"this Email is not exist"})
         }
     } 
     catch (error) {
