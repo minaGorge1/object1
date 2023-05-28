@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const randomstring = require('randomstring')
 
 const User = require('../models/userModel');
+const Pay = require("../models/payModel");
 const sendMail = require("../utils/sendEmail");
 const config = require("../config/config")
 const createToken = require("../utils/createToken");
@@ -19,6 +20,7 @@ const securePassword = (password)=>{
         res.status(400).send(error.message);
     }
 }
+//create account
 const createNewUser = async(req,res,next) =>{
     try {
         const hashPassword = await securePassword (req.body.password);
@@ -44,7 +46,7 @@ const createNewUser = async(req,res,next) =>{
         res.status(400).send(error.message);
     }
 }
-//id need to update function
+//verfiy email 
 const verifyMail = async(req,res,next)=>{
     try {
         const id = req.query.user_id;
@@ -60,7 +62,7 @@ const verifyMail = async(req,res,next)=>{
         res.status(400).send({success:false},error.message);
     }
 }
-
+// login
 const postSignin = async(req,res,next)=>{
     try {
         const email = req.body.email;
@@ -146,6 +148,7 @@ const changepassword = async(req,res,next)=>
         res.status(400).send({success:false},error.message);
     }
 }
+// forget password
 const forget_password = async(req,res,next)=>{
     try{
         const email = req.body.email
@@ -237,6 +240,7 @@ const deleteUserAccount = async(req,res,next)=>{
     }
 }
 
+// reset verfiy email
 const sendVerificationLink = async (req,res,next)=>{
     try {
         const email = req.body.email;
@@ -255,6 +259,24 @@ const sendVerificationLink = async (req,res,next)=>{
     }
 }
 
+//payment method
+const postPayment = async(req,res,next)=>{
+    try {
+        const pay = new Pay({
+            image:req.file.filename
+        });
+        const data = await pay.save();
+        if(data){
+            res.status(200).send({success:true,message:"payment process has been successfully "});
+        }
+        else{
+            res.status(200).send({success:true,message:"payment process has been failed please try again "});
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 module.exports = {
     createNewUser,
     verifyMail,
@@ -266,5 +288,6 @@ module.exports = {
     getUserProfile,
     editUserProfile,
     deleteUserAccount,
-    sendVerificationLink
+    sendVerificationLink,
+    postPayment
 }

@@ -242,6 +242,7 @@ const deleteUserAccount = async(req,res,next)=>{
         res.status(400).json({success:false},"your email not exit and can not delete your account")
     }
 }
+//reset verfiy email
 const sendVerificationLink = async (req,res,next)=>{
     try {
         const email = req.body.email;

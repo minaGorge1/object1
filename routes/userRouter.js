@@ -1,6 +1,20 @@
 const express = require('express')
 const router = require('express').Router();
 const bodyParser = require('body-parser');
+const multer = require("multer");
+const path = require('path');
+
+
+const storage = multer.diskStorage({
+    destination:(req,file,cb)=>{
+        cb(null,path.join(__dirname,"../public/payment"));
+    },
+    filename:(req,file,cb)=>{
+        cb(null, file.originalname + '-' + Date.now()) 
+        
+    }
+})
+const upload = multer({storage:storage});
 
 router.use(bodyParser.urlencoded({extended:true}))
 
@@ -23,5 +37,6 @@ router.get("/userProfile",userController.getUserProfile);
 router.put("/updateUserProfile",userController.editUserProfile);
 router.delete("/delete",userController.deleteUserAccount);
 router.post("/emailVerification",userController.sendVerificationLink);
+router.post("/pay",upload.single('image'),userController.postPayment);
 
 module.exports = router;
