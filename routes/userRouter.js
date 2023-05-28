@@ -22,6 +22,6 @@ router.post("/resetPassword",userController.reset_password);
 router.get("/userProfile",userController.getUserProfile);
 router.put("/updateUserProfile",userController.editUserProfile);
 router.delete("/delete",userController.deleteUserAccount);
-router.post("/verification",userController.sendVerificationLink);
+router.post("/emailVerification",userController.sendVerificationLink);
 
 module.exports = router;

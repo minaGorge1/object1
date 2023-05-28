@@ -19,7 +19,7 @@ const sendVerificationMail = (email,user_id)=>{
                 from: config.emailUser,
                 to: email,
                 subject: 'Verification Email',
-                html:'<p>Hi please copy the link to <a href="http://localhost:3000/verify/'+user_id+'">Verify</a> your Email.</p>'
+                html:'<p>Hi please copy the link to <a href="http://localhost:3000/verify?user_id='+user_id+'">Verify</a> your Email.</p>'
         };
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
@@ -34,7 +34,7 @@ const sendVerificationMail = (email,user_id)=>{
 }
 }
 
-const sendSPVerificationMail = (email,serviceProvider_id)=>{
+const sendSPVerificationMail = (email,user_id)=>{
     try {
         const transporter = nodemailer.createTransport
         ({
@@ -51,7 +51,7 @@ const sendSPVerificationMail = (email,serviceProvider_id)=>{
                 from: config.emailUser,
                 to: email,
                 subject: 'Verification Email',
-                html:'<p>Hi please copy the link to <a href="http://localhost:3000/SPverify/'+serviceProvider_id+'">Verify</a> your Email.</p>'
+                html:'<p>Hi please copy the link to <a href="http://localhost:3000/SPverify?user_id='+user_id+'">Verify</a> your Email.</p>'
         };
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {

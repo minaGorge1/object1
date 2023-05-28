@@ -32,29 +32,29 @@ const createNewUser = async(req,res,next) =>{
         });
         const userData = await user.save();
         if(userData){
+            user.token = await createToken(userData._id);
             sendMail.sendVerificationMail(req.body.email,userData._id);
             res.status(200).send({success:true,data:userData,msg:"your registration has been successfully Please verify your email"});
         }
         else{
             res.status(200).send({success:false,msg:"your register has been failed"})
         }
+    
     } catch (error) {
         res.status(400).send(error.message);
     }
 }
 //id need to update function
 const verifyMail = async(req,res,next)=>{
-    const userid = req.query.user_id;
     try {
-        console.log(userid);
-        const updateinfo = await User.updateOne({_id:userid},{$set:{is_varified :1}});
-        // res.status(201).json({
-        //     data:updateinfo,
-        //     message: "Email verified"
-        // })
-        console.log(updateinfo);
-        res.send("Email verified");
-
+        const id = req.query.user_id;
+        const tokenData = await User.findOne({_id:id});
+        const updateinfo = await User.findByIdAndUpdate({_id:tokenData._id},{$set:{is_varified:1}},{new:true});
+        res.status(201).json({
+            success:true,
+            data:updateinfo,
+            message: "Email verified"
+        })
     } catch (error) {
         console.log(error.message);
         res.status(400).send({success:false},error.message);
@@ -70,12 +70,17 @@ const postSignin = async(req,res,next)=>{
         if(userData){
             const passwordMatch = await bcrypt.compare(password,userData.password);
             if (passwordMatch){
+                if(userData.is_varified === 0){
+                    res.status(200).send({success:false,msg:"please verify your Email"});
+                }
+                else{
                 const tokenData = await createToken(userData._id);
                     res.status(201).json({
                         success:true,
                         message: "Signin successfully",
                         token:tokenData
                     });
+                }
             }
             else{
                 res.status(201).json({success:false ,message: "password is incorrect"});

@@ -24,7 +24,7 @@ const {
 const auth = require("../middlewares/auth");
 
 router.post("/SPsignup",signupValidator,spController.createNewUser);
-router.get("/SPverify/:id",spController.verifyMail);
+router.get("/SPverify",spController.verifyMail);
 router.post("/SPsignin",loginValidator,spController.postSignin);
 router.get("/SPtest",auth,spController.verfiyLogin);
 router.put("/SPlogout",spController.logout);
@@ -34,7 +34,7 @@ router.post("/SPresetPassword",spController.reset_password);
 router.get("/SPProfile",spController.getUserProfile);
 router.put("/updateSPProfile",spController.editUserProfile);
 router.delete("/SPdelete",spController.deleteUserAccount);
-router.post("/SPverification",spController.sendVerificationLink);
+router.post("/SPemailVerification",spController.sendVerificationLink);
 router.post("/createPost",auth,upload.single('image'),spController.spCreatePost);
 router.get("/hotel",spController.Hotel);
 router.get("/cinema",spController.Cinema);
