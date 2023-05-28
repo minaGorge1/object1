@@ -19,7 +19,7 @@ const sendVerificationMail = (email,user_id)=>{
                 from: config.emailUser,
                 to: email,
                 subject: 'Verification Email',
-                html:'<p>Hi please copy the link to <a href="https://api-mtgy.onrender.com/verify?user_id='+user_id+'">Verify</a> your Email.</p>'
+                html:'<p>Hi please copy the link to <a href="http://api-mtgy.onrender.com/verify?user_id='+user_id+'">Verify</a> your Email.</p>'
         };
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
@@ -51,7 +51,7 @@ const sendSPVerificationMail = (email,user_id)=>{
                 from: config.emailUser,
                 to: email,
                 subject: 'Verification Email',
-                html:'<p>Hi please copy the link to <a href="https://api-mtgy.onrender.com/SPverify?user_id='+user_id+'">Verify</a> your Email.</p>'
+                html:'<p>Hi please copy the link to <a href="http://api-mtgy.onrender.com/SPverify?user_id='+user_id+'">Verify</a> your Email.</p>'
         };
             transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
@@ -83,7 +83,7 @@ const sendResetPasswordMail = (email,token)=>{
                 from: config.emailUser,
                 to: email,
                 subject: 'password Reset',
-                html:'<p>Hi please copy the link to <a href="http://localhost:3000/resetPassword?token='+token+'">Reset</a> your password.</p>'
+                html:'<p>Hi please copy the link to <a href="http://api-mtgy.onrender.com/resetPassword?token='+token+'">Reset</a> your password.</p>'
             };
             
             transporter.sendMail(mailOptions, function(error, info){
@@ -117,7 +117,7 @@ const sendSPResetPasswordMail = async(email,token) =>{
             from:config.emailUser,
             to:email,
             subject:'For reset password',
-            html:"<p> hii "+',Please copy the link <a href ="http://localhost:3000/reset-password?token='+token+'"> and reset your password</a>'
+            html:"<p> hii "+',Please copy the link <a href ="http://api-mtgy.onrender.com/reset-password?token='+token+'"> and reset your password</a>'
         }
         transporter.sendMail(mailOptions,(error,info)=>{
             if(error){
