@@ -35,6 +35,7 @@ const createNewUser = async(req,res,next) =>{
         });
         const userData = await user.save();
         if(userData){
+            user.token = await createToken(userData._id);
             sendMail.sendSPVerificationMail(req.body.email,userData._id);
             res.status(200).send({success:true,data:userData,msg:"your registration has been successfully Please verify your email"});
         }
