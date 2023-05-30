@@ -77,6 +77,7 @@ const postSignin = async(req,res,next)=>{
                     res.status(201).json({
                         success:true,
                         message: "Signin successfully",
+                        userData:userData,
                         token:tokenData
                     });
                 }
@@ -197,14 +198,13 @@ const reset_password = async(req,res,next)=>{
 }
 //profile
 const getUserProfile = async(req,res,next)=>{
-    const email = req.body.email
         try {
-            const userData = await ServiceProvider.findOne({email:email})
-            const user = await ServiceProvider.findById({_id:userData._id})
-            return res.status(200).json({success:true},user)
+            const id = req.userId;
+            const user = await ServiceProvider.findById({_id:id});
+            res.status(200).send({success:true , userData:user});
         } 
         catch (error) {
-            return res.status(400).json({success:false},'user email is required');
+            res.status(400).send({success:false , msg:"Invalid Token"});
     }
 
 }

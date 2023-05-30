@@ -79,6 +79,7 @@ const postSignin = async(req,res,next)=>{
                     res.status(201).json({
                         success:true,
                         message: "Signin successfully",
+                        userData:userData,
                         token:tokenData
                     });
                 }
@@ -195,14 +196,15 @@ const reset_password = async(req,res,next)=>{
 }
 //profile
 const getUserProfile = async(req,res,next)=>{
-    const email = req.body.email
+    // const email = req.body.email
         try {
-            const userData = await User.findOne({email:email})
-            const user = await User.findById(userData._id)
-            return res.status(200).json(user)
+            const id = req.userId;
+            //const userData = await User.findOne({email:email})
+            const user = await User.findById({_id:id});
+            res.status(200).send({success:true , userData:user});
         } 
         catch (error) {
-            return res.status(400).json('user email is required');
+            res.status(400).send({success:false , msg:"Invalid Token"});
     }
 }
 const editUserProfile = async(req,res,next)=>{
