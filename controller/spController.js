@@ -284,7 +284,6 @@ const sendVerificationLink = async (req,res,next)=>{
 
 const spCreatePost = async(req,res,next)=>{
     try {
-        // const id = req.session.serviceProvider_id
         const id = req.userId;
         console.log(id)
         const userData = await ServiceProvider.findById({_id:id})
@@ -299,6 +298,7 @@ const spCreatePost = async(req,res,next)=>{
             });
             const post = await service.save();
             if(post){
+                sendMail.sendAdminNotifyMail(post.offerTitle,post.postDetails,post.price,post.category,post.serviceName,post.image);
                 res.status(200).send({success:true,data:post,msg:"your offer has been successfully posted"});
             }
             else{
