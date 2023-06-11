@@ -3,7 +3,7 @@ const couponModel = require("../models/couponModel.js");
 
 
 const list = async (req, res, next) => {
-    const coupon = await couponModel.find({})
+    const coupon = await couponModel.find({ isDeleted: false})
     res.json(coupon)
 }
 
