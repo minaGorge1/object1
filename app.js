@@ -12,6 +12,7 @@ const DB_URL = "mongodb+srv://as2461:9yOin73KLZPzRHXj@mtgy.acvqmrs.mongodb.net/m
 
 const userRouter = require('./routes/userRouter')
 const SPRouter = require("./routes/spRoute")
+const couponRouter = require("./routes/couponRouter.js")
 
 
 
@@ -40,6 +41,7 @@ app.use((req, res, next) => {
 
 app.use("/",userRouter);
 app.use("/",SPRouter);
+app.use("/coupon",couponRouter);
 
 app.use((req, res, next) => {
     const error = new Error("Not found");
