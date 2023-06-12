@@ -13,7 +13,10 @@ const DB_URL = "mongodb+srv://as2461:9yOin73KLZPzRHXj@mtgy.acvqmrs.mongodb.net/m
 const userRouter = require('./routes/userRouter')
 const SPRouter = require("./routes/spRoute")
 const couponRouter = require("./routes/couponRouter.js")
-
+const commentRouter = require("./routes/commentRoute.js")
+const cartRouter = require("./routes/cartRouter.js")
+const orderRouter = require("./routes/orderRouter.js")
+const ratingRouter = require("./routes/ratingRouter.js")
 
 
 mongoose.connect(DB_URL,{useNewUrlParser:true,useUnifiedTopology: true,}).then(()=>{
@@ -42,6 +45,10 @@ app.use((req, res, next) => {
 app.use("/",userRouter);
 app.use("/",SPRouter);
 app.use("/coupon",couponRouter);
+app.use("/post",commentRouter);
+app.use("/cart",cartRouter);
+app.use("/order",orderRouter);
+app.use("/rating",ratingRouter);
 
 app.use((req, res, next) => {
     const error = new Error("Not found");

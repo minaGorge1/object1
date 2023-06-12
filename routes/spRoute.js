@@ -45,6 +45,8 @@ router.get("/archaeologicalSites",spController.ArchaeologicalSites);
 router.get("/restaurantAndCafe",spController.RestaurantAndCafe);
 router.get("/transportationCompany",spController.TransportationCompany);
 router.get("/profile",auth,spController.getSP_forClient);
+router.post("/searchFast/:letter",spController.searchFast);
+
 
 
 

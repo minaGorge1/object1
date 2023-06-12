@@ -33,6 +33,7 @@ const updateCoupon = async (req, res, next) => {
                 return res.status(409).json({ success: false, message: "Duplicated coupon name" });
             }
             coupon.name = req.body.name
+            coupon.expire = req.body.expire
         }
 
         if (req.body.amount) {

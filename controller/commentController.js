@@ -1,129 +1,135 @@
 
 const commentModel = require("../models/CommentModel.js");
-const Services = require("../models/serviceModel");
-
+const serviceModel = require("../models/serviceModel.js");
 
 
 
 //comments
 const comments = async (req, res, next) => {
-    const { postId } = req.params
-    const commentList = await commentModel.find({ postId: postId }).populate([
-        {
-            path: 'reply',
-            select: "text userId"
-        }
-    ])
-    return res.status(201).json({ message: "Done", commentList })
+    try {
+        const { postId } = req.params
+        const commentList = await commentModel.find({ postId: postId }).populate([
+            {
+                path: 'reply',
+                select: "text userId"
+            }
+        ])
+        return res.status(201).json({ message: "Done", commentList })
+    } catch (error) {
+        res.status(400).send({ success: false }, error.message);
+    }
+
 }
-
-
 
 //create Comment
 const createComment = async (req, res, next) => {
-
-    const post = await Services.findById(req.params.postId)
-    if (!post) {
-        return next(new Error("In-valid post id", { cause: 404 }))
+    try {
+        const post = await serviceModel.findById(req.params.postId)
+        if (!post) {
+            return res.status(404).send({ success: false, message: "In-valid ID" });
+        }
+        req.body.postId = post._id;
+        /* req.body.userId = req.user._id */ //id user from token
+        const comment = await commentModel.create(req.body)
+        return res.status(201).json({ message: "Dona", comment })
+    } catch (error) {
+        res.status(400).send({ success: false }, error.message);
     }
-    req.body.postId = post._id;
-    req.body.userId = req.user._id
-    const comment = await commentModel.create(req.body)
-    return res.status(201).json({ message: "Dona", comment })
 }
 
 //reply Comment
 const replyComment = async (req, res, next) => {
-    const { commentId, postId } = req.params
-    const comment = await commentModel.findOne({ _id: commentId, postId: postId })
-    if (!comment) {
-        return next(new Error("In-valid post or comment id", { cause: 404 }))
-    }
+    try {
+        const { commentId, postId } = req.params
+        const comment = await commentModel.findOne({ _id: commentId, postId: postId })
+        if (!comment) {
+            return res.status(404).send({ success: false, message: "In-valid ID" });
+        }
 
-    req.body.postId = postId;
-    req.body.userId = req.user._id;
-    req.body.commentType = "reply"
-    const reply = await commentModel.create(req.body)
-    comment.reply.push(reply._id)
-    await comment.save()
-    return res.status(201).json({ message: "Dona", comment })
+        req.body.postId = postId;
+        /* req.body.userId = req.user._id; */ // id from token mkan req.user._id
+        req.body.commentType = "reply"
+        const reply = await commentModel.create(req.body)
+        comment.reply.push(reply._id)
+        await comment.save()
+        return res.status(201).json({ message: "Dona", comment })
+    } catch (error) {
+        res.status(400).send({ success: false }, error.message);
+    }
 }
 
 //update Comment
 const updateComment = async (req, res, next) => {
-    const { commentId } = req.params
-    const { text } = req.body
+    try {
+        const { commentId } = req.params
+        const { text } = req.body
 
-    const Comment = await commentModel.findById({ _id: commentId, createdBy: req.user._id })
-    if (!Comment || Comment.softDelete) {
-        return next(new Error(`not Found Comment`, { cause: 404 }))
+        const Comment = await commentModel.findById({ _id: commentId/* , createdBy: req.user._id */ })
+        if (!Comment || Comment.softDelete) {
+            return res.status(404).send({ success: false, message: "not found" });
+        }
+        if (!text || Comment.text == text) {
+            return res.status(409).send({ success: false, message: "In-valid ID" });
+        }
+        Comment.text = text
+        await Comment.save()
+        return res.json({ message: "Done", Comment });
+    } catch (error) {
+        res.status(400).send({ success: false }, error.message);
     }
-    if (!text || Comment.text == text) {
-        return next(new Error(`In-valid Comment`, { cause: 409 }))
-    }
-    Comment.text = text
-    await Comment.save()
-    return res.json({ message: "Done", Comment });
 }
-
 
 //delete Comment
 const deleteComment = async (req, res, next) => {
     const { commentId } = req.params
     const comment = await commentModel.findByIdAndDelete({ _id: commentId })
     if (!comment || comment.softDelete) {
-        return next(new Error(`not Found comment`, { cause: 404 }))
+        return res.status(404).send({ success: false, message: "not found" });
     }
     return res.json({ message: "Done" });
 }
 
-//softDelete post
-const softDeleteComment = async (req, res, next) => {
-    const { commentId } = req.params
-    const comment = await commentModel.findById({ _id: commentId })
-    if (!comment || comment.softDelete) {
-        return next(new Error(`not Found comment`, { cause: 404 }))
-    }
-    comment.softDelete = true
-    comment.save()
-    return res.json({ message: "Done", comment });
-}
-
-
-
 //like
 const likeComment = async (req, res, next) => {
-    const { commentId } = req.params;
-    const { _id } = req.user;
-    const comment = await commentModel.findByIdAndUpdate(
-        commentId,
-        {
-            $addToSet: { like: _id },
-            $pull: { unlike: _id }
-        },
-        { new: true }
-    )
-    comment.totalVote = comment.like.length - comment.unlike.length
-    await comment.save()
-    return res.status(201).json({ message: "Done", comment })
+    try {
+        const { commentId } = req.params;
+        const { userId } = req.body; //id user from token
+        const comment = await commentModel.findByIdAndUpdate(
+            commentId,
+            {
+                $addToSet: { like: userId },
+                $pull: { unlike: userId }
+            },
+            { new: true }
+        )
+        comment.totalVote = comment.like.length - comment.unlike.length
+        await comment.save()
+        return res.status(201).json({ message: "Done", comment })
+    } catch (error) {
+        res.status(400).send({ success: false }, error.message);
+    }
 }
 
 //unlike
 const unlikeComment = async (req, res, next) => {
-    const { commentId } = req.params;
-    const { _id } = req.user;
-    //add To Set
-    const comment = await commentModel.findByIdAndUpdate(
-        commentId,
-        {
-            $addToSet: { unlike: _id },
-            $pull: { like: _id }
-        },
-        { new: true }
-    )
-    comment.totalVote = comment.like.length - comment.unlike.length
-    await comment.save()
-    return res.status(201).json({ message: "Done", comment })
+    try {
+        const { commentId } = req.params;
+        const { userId } = req.body; //id user from token
+        //add To Set
+        const comment = await commentModel.findByIdAndUpdate(
+            commentId,
+            {
+                $addToSet: { unlike: userId },
+                $pull: { like: userId }
+            },
+            { new: true }
+        )
+        comment.totalVote = comment.like.length - comment.unlike.length
+        await comment.save()
+        return res.status(201).json({ message: "Done", comment })
+    } catch (error) {
+        res.status(400).send({ success: false }, error.message);
+    }
 }
 module.exports = {
     comments,
@@ -131,7 +137,6 @@ module.exports = {
     replyComment,
     updateComment,
     deleteComment,
-    softDeleteComment,
     likeComment,
     unlikeComment,
 }
