@@ -27,7 +27,7 @@ const showRiting = async (req, res, next) => {
         if (!rate) {
             return res.status(201).send({ message: "empty" })
         }
-        return res.status(201).send({ message: "Done", rate , cfountRiting })
+        return res.status(201).send({ message: "Done", rate , countRiting })
     } catch (error) {
         res.status(400).send({ success: false, message: error.message });
     }
