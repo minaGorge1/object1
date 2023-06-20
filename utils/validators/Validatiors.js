@@ -82,6 +82,11 @@ const numStars = joi.object({
 }).required()
 
 const showRiting = joi.object({
+    serviceId: valid.generalFields.id.required()
+}).required()
+
+
+const showRitingByNum = joi.object({
     num: joi.string().max(5),
     serviceId: valid.generalFields.id.required()
 }).required()
@@ -100,5 +105,6 @@ module.exports = {
     cancelOrder,
     createOrder,
     numStars,
-    showRiting
+    showRiting,
+    showRitingByNum
 }

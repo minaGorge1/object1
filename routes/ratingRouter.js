@@ -10,8 +10,14 @@ router.patch("/user/:userId/service/:serviceId/numStars/:num",validation.validat
     /* auth, */
     ratingController.numStars)
 
-    router.get("/service/:serviceId/numStars/:num",validation.validation(validators.showRiting),
+    //showRiting
+    router.get("/service/:serviceId",validation.validation(validators.showRiting),
     /* auth, */
     ratingController.showRiting)
+
+    //showRitingByNum
+    router.get("/service/:serviceId/numStars/:num",validation.validation(validators.showRitingByNum),
+    /* auth, */
+    ratingController.showRitingByNum)
 
 module.exports = router;

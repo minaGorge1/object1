@@ -20,6 +20,21 @@ const numStars = async (req, res, next) => {
 
 const showRiting = async (req, res, next) => {
     try {
+        const { serviceId } = req.params;
+        const rate = await ratingModel.find({ serviceId: serviceId })
+        const countRiting = rate.length
+        if (!rate) {
+            return res.status(201).send({ message: "empty" })
+        }
+        return res.status(201).send({ message: "Done", rate , countRiting })
+    } catch (error) {
+        res.status(400).send({ success: false, message: error.message });
+    }
+}
+
+
+const showRitingByNum = async (req, res, next) => {
+    try {
         const { num, serviceId } = req.params;
         const number = parseInt(num)
         const rate = await ratingModel.find({ serviceId: serviceId, noOfStars: number })
@@ -34,6 +49,7 @@ const showRiting = async (req, res, next) => {
 }
 module.exports = {
     numStars,
-    showRiting
+    showRiting,
+    showRitingByNum
 }
 
