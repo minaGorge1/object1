@@ -81,6 +81,11 @@ const numStars = joi.object({
     userId: valid.generalFields.id.required()
 }).required()
 
+const showRiting = joi.object({
+    num: joi.string().max(5),
+    serviceId: valid.generalFields.id.required()
+}).required()
+
 module.exports = {
     updateCoupon,
     createCoupon,
@@ -94,5 +99,6 @@ module.exports = {
     likeOrDislikeComment,
     cancelOrder,
     createOrder,
-    numStars
+    numStars,
+    showRiting
 }
